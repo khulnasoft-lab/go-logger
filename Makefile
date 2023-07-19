@@ -7,7 +7,7 @@ GOIMPORTS_CMD := $(TEMP_DIR)/gosimports -local github.com/khulnasoft-labs
 # Tool versions #################################
 GOLANGCILINT_VERSION := v1.52.2
 GOSIMPORTS_VERSION := v0.3.8
-BOUNCER_VERSION := v0.4.0
+BOUNCER_VERSION := v0.2.0
 
 # Formatting variables #################################
 BOLD := $(shell tput -T linux bold)
