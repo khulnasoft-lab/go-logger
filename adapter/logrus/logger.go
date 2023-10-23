@@ -9,7 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	iface "github.com/khulnasoft-labs/go-logger"
+	iface "github.com/khulnasoft-lab/go-logger"
 )
 
 var _ iface.Logger = (*logger)(nil)

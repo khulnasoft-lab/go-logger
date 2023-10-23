@@ -1,4 +1,4 @@
-module github.com/khulnasoft-labs/go-logger
+module github.com/khulnasoft-lab/go-logger
 
 go 1.17
 
