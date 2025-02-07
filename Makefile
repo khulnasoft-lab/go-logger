@@ -2,12 +2,12 @@ TEMP_DIR := ./.tmp
 
 # Command templates #################################
 LINT_CMD := $(TEMP_DIR)/golangci-lint run --tests=false
-GOIMPORTS_CMD := $(TEMP_DIR)/gosimports -local github.com/khulnasoft-lab
+GOIMPORTS_CMD := $(TEMP_DIR)/gosimports -local github.com/khulnasoft
 
 # Tool versions #################################
 GOLANGCILINT_VERSION := v1.52.2
 GOSIMPORTS_VERSION := v0.3.8
-BOUNCER_VERSION := v0.2.0
+BOUNCER_VERSION := v0.4.0
 
 # Formatting variables #################################
 BOLD := $(shell tput -T linux bold)
@@ -54,7 +54,7 @@ bootstrap: $(TEMP_DIR) bootstrap-go bootstrap-tools ## Download and install all 
 .PHONY: bootstrap-tools
 bootstrap-tools: $(TEMP_DIR)
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(TEMP_DIR)/ $(GOLANGCILINT_VERSION)
-	curl -sSfL https://raw.githubusercontent.com/sulaiman-coder/gobouncer/master/bouncer.sh | sh -s -- -b $(TEMP_DIR)/ $(BOUNCER_VERSION)
+	curl -sSfL https://raw.githubusercontent.com/khulnasoft/go-licenses/master/golicenses.sh | sh -s -- -b $(TEMP_DIR)/ $(BOUNCER_VERSION)
 	# the only difference between goimports and gosimports is that gosimports removes extra whitespace between import blocks (see https://github.com/golang/go/issues/20818)
 	GOBIN="$(realpath $(TEMP_DIR))" go install github.com/rinchsan/gosimports/cmd/gosimports@$(GOSIMPORTS_VERSION)
 
@@ -98,7 +98,7 @@ lint-fix: format  ## Auto-format all source code + run golangci lint fixers
 .PHONY: check-licenses
 check-licenses:  ## Ensure transitive dependencies are compliant with the current license policy
 	$(call title,Checking for license compliance)
-	$(TEMP_DIR)/bouncer check ./...
+	$(TEMP_DIR)/golicenses check ./...
 
 check-go-mod-tidy:
 	@ .github/scripts/go-mod-tidy-check.sh && echo "go.mod and go.sum are tidy!"

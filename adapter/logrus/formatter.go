@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"sort"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/mgutz/ansi"
@@ -125,8 +124,6 @@ type TextFormatter struct {
 
 	// Whether the logger's out is to a terminal.
 	isTerminal bool
-
-	sync.Once
 }
 
 func getCompiledColor(main string, fallback string) func(string) string {
@@ -193,9 +190,7 @@ func (f *TextFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	}
 
 	prefixFieldClashes(entry.Data)
-
-	f.Do(func() { f.init(entry) })
-
+	f.init(entry)
 	isFormatted := f.ForceFormatting || f.isTerminal
 
 	timestampFormat := f.TimestampFormat
