@@ -105,16 +105,16 @@ func (r *redactingLogger) redactFields(fields []interface{}) []interface{} {
 		case iface.Fields:
 			for kkk, vvv := range vv {
 				delete(vv, kkk) // this key may have data that should be redacted
-				redactedKey := r.redactString(kkk)
+				vv[r.redactString(kkk)] = vvv
 
 				switch vvvv := vvv.(type) {
 				case string:
-					vv[redactedKey] = r.redactString(vvvv)
+					vv[r.redactString(kkk)] = r.redactString(vvvv)
 				case int, int32, int64, int16, int8, float32, float64:
 					// don't coerce non-string primitives to different types (but still redact the key)
-					vv[redactedKey] = vvvv
+					vv[r.redactString(kkk)] = vvvv
 				default:
-					vv[redactedKey] = r.redactString(fmt.Sprintf("%+v", vvvv))
+					vv[r.redactString(kkk)] = r.redactString(fmt.Sprintf("%+v", vvvv))
 				}
 			}
 			fields[i] = vv
@@ -125,7 +125,6 @@ func (r *redactingLogger) redactFields(fields []interface{}) []interface{} {
 	}
 	return fields
 }
-
 func (r *redactingLogger) redactString(s string) string {
 	return r.redactor.RedactString(s)
 }

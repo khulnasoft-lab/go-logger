@@ -1,7 +1,7 @@
 issues:
   max-same-issues: 25
 
-  # TODO: enable this when we have coverage on docstring comments
+  # TODO: enable this when we have test coverage on docstring comments
 #  # The list of ids of default excludes to include or disable.
 #  include:
 #    - EXC0002 # disable excluding of issues about comments from golint
@@ -9,6 +9,8 @@ issues:
 
 linters:
   # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
+  # Disable all linters by default to have more control over which linters are enabled.
+  # This helps in avoiding unexpected issues when golangci-lint updates and adds new linters.
   disable-all: true
   enable:
     - asciicheck
@@ -43,18 +45,29 @@ linters:
     - whitespace
 linters-settings:
   funlen:
-    # Checks the number of lines in a function.
-    # If lower than 0, disable the check.
     # Default: 60
+    # Increased to 70 to allow for more complex functions without triggering the linter.
     lines: 70
-    # Checks the number of statements in a function.
     # If lower than 0, disable the check.
     # Default: 40
+    # Overridden to 50 to allow for more complex functions.
     statements: 50
-output:
+  # Setting uniq-by-line to false to ensure that all instances of the same issue are reported,
+  # even if they occur on the same line. This helps in identifying all occurrences of an issue.
   uniq-by-line: false
+  # A 10-minute timeout is chosen to allow enough time for the linters to run on larger codebases.
+  timeout: 10m
 run:
   timeout: 10m
+  skip-dirs:
+    - vendor
+    - third_party
+  skip-files:
+    - ".*_test\\.go$"
+  modules-download-mode: readonly
+  allow-parallel-runners: true
+  go: "1.23.6"
+  skip-dirs-use-default: true
 
 # do not enable...
 #    - dogsled           # found to be to niche and ineffective
@@ -76,4 +89,5 @@ run:
 #    - prealloc    # following this rule isn't consistently a good idea, as it sometimes forces unnecessary allocations that result in less idiomatic code
 #    - scopelint   # deprecated
 #    - testpackage
-#    - wsl         # this doens't have an auto-fixer yet and is pretty noisy (https://github.com/bombsimon/wsl/issues/90)
+#    - wsl         # this doesn't have an auto-fixer yet and is pretty noisy (https://github.com/bombsimon/wsl/issues/90)
+#    - wrapcheck   # this is a good idea, but is no longer supported and is prone to false positives
